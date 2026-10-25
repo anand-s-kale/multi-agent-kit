@@ -1,0 +1,13 @@
+{
+  "$comment": "Drop this into a project's .mcp.json to share the antigravity server with your team. Or just run: claude mcp add antigravity -- npx -y antigravity-claude-mcp",
+  "mcpServers": {
+    "antigravity": {
+      "command": "npx",
+      "args": ["-y", "antigravity-claude-mcp"],
+      "env": {
+        "AGY_MODEL": "Gemini 3.1 Pro (High)",
+        "AGY_TIMEOUT": "5m"
+      }
+    }
+  }
+}

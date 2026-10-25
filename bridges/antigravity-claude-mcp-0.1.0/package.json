@@ -1,0 +1,47 @@
+{
+  "name": "antigravity-claude-mcp",
+  "version": "0.1.0",
+  "description": "Use Google Antigravity (Gemini 3 Pro, Claude, GPT-OSS) as an independent second-opinion / code-review model inside Claude Code — via MCP, one command, zero dependencies.",
+  "type": "module",
+  "bin": {
+    "antigravity-claude-mcp": "bin/cli.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node bin/cli.mjs",
+    "test": "node test/smoke.mjs"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "claude-code",
+    "antigravity",
+    "gemini",
+    "agy",
+    "code-review",
+    "second-opinion",
+    "ai",
+    "agent",
+    "llm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arjunthilak05/antigravity-claude-mcp.git"
+  },
+  "homepage": "https://github.com/arjunthilak05/antigravity-claude-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/arjunthilak05/antigravity-claude-mcp/issues"
+  },
+  "license": "MIT",
+  "author": "Arjun Thilak"
+}
