@@ -17,3 +17,13 @@ Sources:
 - https://nimbalyst.com/blog/best-tools-for-running-parallel-ai-coding-agents/
 - https://www.tembo.io/blog/ai-agent-orchestration-tools
 - https://superset.sh/compare/best-ai-coding-agents-2026
+
+## Related: Maestro (workflow plugin, not a console)
+
+https://github.com/josstei/maestro-orchestrate — reviewed 2026-10-25 (v1.6.4, Apache-2.0, ~480 stars, actively maintained).
+
+- Installs separately into Claude Code, Codex, Antigravity and Qwen Code. Adds 39 specialist subagents, an Express path and a 4-phase Design → Plan → Execute → Complete workflow with approval gates, and session state in `docs/maestro/`.
+- **Does not dispatch across runtimes.** Maestro in Claude uses Claude subagents and Maestro in Codex uses Codex agents. Its code has no calls to `codex exec` or `agy -p`. It complements this kit and does not replace it: the kit is what routes work between Claude, Codex and Gemini.
+- **Claude Code: skip.** superpowers already covers the same plan → execute → review loop, and two workflow systems would compete. It also adds 39 agents to every session, and its `/status` may collide with the built-in one.
+- **Codex / Antigravity: worth a trial.** It gives them a structured workflow when run on their own: `codex plugin marketplace add josstei/maestro-orchestrate`, and `agy plugin install https://github.com/josstei/maestro-orchestrate/tree/main/antigravity`.
+- Marketplace installs track latest. Pin a release tag or read the diff before upgrading.
