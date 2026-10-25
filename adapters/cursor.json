@@ -1,0 +1,17 @@
+{
+  "id": "cursor",
+  "name": "Cursor CLI",
+  "vendor": "Anysphere",
+  "plans": "Cursor Pro / Ultra",
+  "status": "untested",
+  "commands": { "win32": ["cursor-agent", "agent"], "default": ["cursor-agent", "agent"] },
+  "versionArgs": ["--version"],
+  "auth": { "type": "none" },
+  "usage": { "source": "none" },
+  "models": "plan models (pass --model)",
+  "run": { "read": "agent -p \"{prompt}\" --mode=ask --output-format text", "write": "agent -p \"{prompt}\" --output-format text" },
+  "strengths": "Access to whichever frontier models the Cursor plan includes.",
+  "install": { "windows": "see https://cursor.com/cli", "unix": "curl https://cursor.com/install -fsS | bash" },
+  "docs": "https://cursor.com/docs/cli",
+  "notes": "Untested by the maintainers. The binary name `agent` is generic: confirm with `agent --version` that it is Cursor's. Print mode may need permission settings for unattended writes."
+}

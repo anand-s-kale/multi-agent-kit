@@ -1,0 +1,17 @@
+{
+  "id": "qwen",
+  "name": "Qwen Code",
+  "vendor": "Alibaba Qwen",
+  "plans": "Qwen OAuth or API key",
+  "status": "untested",
+  "commands": { "win32": ["%APPDATA%\\npm\\qwen.cmd", "qwen"], "default": ["qwen"] },
+  "versionArgs": ["--version"],
+  "auth": { "type": "none" },
+  "usage": { "source": "none" },
+  "models": "account default",
+  "run": { "read": "qwen -p \"{prompt}\" --approval-mode plan", "write": "qwen -p \"{prompt}\"" },
+  "strengths": "General coding; headless JSON output for scripting.",
+  "install": { "windows": "npm install -g @qwen-code/qwen-code@latest", "unix": "npm install -g @qwen-code/qwen-code@latest" },
+  "docs": "https://qwenlm.github.io/qwen-code-docs/",
+  "notes": "Untested by the maintainers. Needs Node 22+. Check the --approval-mode values against `qwen --help`."
+}

@@ -11,7 +11,7 @@ You coordinate an independent review by two other model families and filter thei
 
 <workflow>
 1. Get the change: `git -C <repo> diff <base>...HEAD --stat` (or `git status --short` for uncommitted work). Note the intent of the change and the list of changed files.
-2. Ask Codex through Bash. Set `CODEX="$APPDATA/npm/codex.cmd"` if that file exists, else `CODEX=codex`. Then, from the repo directory:
+2. Ask Codex through Bash. Set `CODEX` to the codex `path` reported by `node ~/.multi-agent-kit/bin/mak.mjs status --json` (on Windows a bare `codex` may be an outdated copy). If Codex is not installed or not signed in, skip it. Then, from the repo directory:
    - branch: `"$CODEX" review --base <base> "<intent>. Adversarial review: correctness bugs, security issues, missed edge cases, regressions, with file:line."`
    - uncommitted: `"$CODEX" review --uncommitted "<same instructions>"`
    Give it a 15-minute timeout. It is read-only by design.

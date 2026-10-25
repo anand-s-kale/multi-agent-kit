@@ -1,0 +1,20 @@
+{
+  "id": "claude",
+  "name": "Claude Code",
+  "vendor": "Anthropic",
+  "plans": "Claude Pro / Max",
+  "status": "verified",
+  "commands": { "win32": ["%APPDATA%\\npm\\claude.cmd", "claude"], "default": ["claude"] },
+  "versionArgs": ["--version"],
+  "auth": { "type": "file", "path": "~/.claude.json", "key": "oauthAccount" },
+  "usage": { "source": "claude-statusline" },
+  "models": ["opus", "sonnet", "haiku"],
+  "run": {
+    "read": "claude -p \"{prompt}\" --model {model} --permission-mode plan",
+    "write": "claude -p \"{prompt}\" --model {model}"
+  },
+  "strengths": "Lead agent. Inside a session, prefer subagents (sonnet-builder, context-explorer) over spawning a new claude process.",
+  "install": { "windows": "npm install -g @anthropic-ai/claude-code", "unix": "npm install -g @anthropic-ai/claude-code" },
+  "docs": "https://code.claude.com/docs",
+  "notes": "Limits come from the status line payload, saved by bin/statusline.mjs. They refresh only while a Claude Code session is open."
+}

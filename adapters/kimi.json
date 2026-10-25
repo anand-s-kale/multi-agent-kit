@@ -1,0 +1,17 @@
+{
+  "id": "kimi",
+  "name": "Kimi Code CLI",
+  "vendor": "Moonshot AI",
+  "plans": "Kimi Code membership or Moonshot API key",
+  "status": "untested",
+  "commands": { "win32": ["kimi"], "default": ["kimi"] },
+  "versionArgs": ["--version"],
+  "auth": { "type": "none" },
+  "usage": { "source": "none" },
+  "models": "account default",
+  "run": { "read": "kimi -p \"{prompt}\"", "write": "kimi -p \"{prompt}\"" },
+  "strengths": "Long-context coding at low cost.",
+  "install": { "windows": "official PowerShell installer from https://code.kimi.com", "unix": "curl -fsSL https://code.kimi.com/kimi-code/install.sh | bash" },
+  "docs": "https://code.kimi.com",
+  "notes": "Untested by the maintainers (no subscription). Do not pip install kimi-code: it is an empty meta-package. Paid plans have a 5-hour and a weekly quota. No read-only flag confirmed: ask for findings only in the prompt."
+}

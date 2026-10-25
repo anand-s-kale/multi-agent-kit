@@ -1,8 +1,9 @@
 # multi-agent-kit installer (Windows, PowerShell 7+)
-# Copies the shared multi-agent rules into the global config of Claude Code,
-# Codex and Antigravity, installs the pinned Antigravity bridge, and registers
-# it as a user-scope MCP server. Safe to re-run: every step replaces its own
-# earlier output instead of appending a duplicate.
+# Installs the `mak` status tool and agent adapters to ~/.multi-agent-kit,
+# sets Claude Code's status line so Claude's usage limits get recorded, copies
+# the shared multi-agent rules into the global config of Claude Code, Codex and
+# Antigravity, and registers the pinned Antigravity bridge as a user-scope MCP
+# server. Safe to re-run: every step replaces its own earlier output.
 
 $ErrorActionPreference = 'Stop'
 $Kit = $PSScriptRoot
@@ -29,6 +30,15 @@ function Set-ManagedBlock {
     Set-Content -Path $Path -Value ($text + "`n") -NoNewline
     Write-Host "  updated $Path"
 }
+
+Write-Host "mak (status tool)"
+$makHome = Join-Path $HOME '.multi-agent-kit'
+foreach ($sub in 'bin', 'adapters') {
+    New-Item -ItemType Directory -Force (Join-Path $makHome $sub) | Out-Null
+    Copy-Item (Join-Path $Kit "$sub\*") (Join-Path $makHome $sub) -Recurse -Force
+}
+Write-Host "  copied bin\ and adapters\ to $makHome"
+node (Join-Path $makHome 'bin\mak.mjs') setup-statusline | ForEach-Object { "  $_" }
 
 Write-Host "Claude Code"
 $claudeHome = Join-Path $HOME '.claude'
@@ -64,11 +74,32 @@ if (-not (Test-Path $agy)) {
     Write-Warning "agy CLI not found. Install: irm https://antigravity.google/cli/install.ps1 | iex ; then sign in: & `"$agy`" -p ping --print-timeout 5m"
 }
 
-claude mcp get antigravity *> $null
-if ($LASTEXITCODE -ne 0) {
-    claude mcp add --scope user antigravity -e "AGY_BIN=$agy" -- node (Join-Path $bridgeDest 'bin\cli.mjs')
-} else {
-    Write-Host "  MCP server 'antigravity' already registered"
+# The bridge's built-in default model ("Gemini 3.1 Pro (High)") is not offered
+# on every account, so pick the first model id `agy models` lists.
+$agyModel = $env:AGY_MODEL
+if (-not $agyModel -and (Test-Path $agy)) {
+    $agyModel = (& $agy models 2>$null | Where-Object { $_ -match '^\S+\t' } | Select-Object -First 1) -replace '\t.*$', ''
 }
+if (-not $agyModel) { $agyModel = 'gemini-3.8-flash-high' }
+
+# Re-register every time so changes to the bridge env take effect.
+# add-json, not `add ... -- node ...`: PowerShell drops the `--`, and then the
+# variadic -e option swallows the command.
+$server = @{
+    type    = 'stdio'
+    command = 'node'
+    args    = @((Join-Path $bridgeDest 'bin\cli.mjs'))
+    env     = @{ AGY_BIN = $agy; AGY_MODEL = $agyModel }
+} | ConvertTo-Json -Compress
+claude mcp remove antigravity -s user *> $null
+claude mcp add-json --scope user antigravity $server | Out-Null
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "  MCP server 'antigravity' registered (model $agyModel)"
+} else {
+    Write-Warning "Could not register the antigravity MCP server (claude mcp add-json exited $LASTEXITCODE)"
+}
+
+Write-Host "`nAgents on this machine:"
+node (Join-Path $makHome 'bin\mak.mjs') status
 
 Write-Host "`nDone. Start a new Claude Code session to load the rules, agents and MCP tools."

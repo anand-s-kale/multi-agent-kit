@@ -1,0 +1,17 @@
+{
+  "id": "grok",
+  "name": "Grok Build CLI",
+  "vendor": "xAI",
+  "plans": "SuperGrok / X Premium+ or XAI_API_KEY",
+  "status": "untested",
+  "commands": { "win32": ["grok"], "default": ["grok"] },
+  "versionArgs": ["--version"],
+  "auth": { "type": "none" },
+  "usage": { "source": "none" },
+  "models": "account default",
+  "run": { "read": "grok -p \"{prompt}\" --no-auto-update", "write": "grok -p \"{prompt}\" --no-auto-update" },
+  "strengths": "Second opinion from another model family.",
+  "install": { "windows": "see https://x.ai/news/grok-build-cli", "unix": "curl -fsSL https://x.ai/cli/install.sh | bash && grok login" },
+  "docs": "https://x.ai/news/grok-build-cli",
+  "notes": "Untested by the maintainers. No read-only flag confirmed: ask for findings only in the prompt."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "antigravity",
+  "name": "Google Antigravity CLI (agy)",
+  "vendor": "Google",
+  "plans": "Google AI Pro / Ultra (also a free consumer tier)",
+  "status": "verified",
+  "commands": { "win32": ["%LOCALAPPDATA%\\agy\\bin\\agy.exe"], "default": ["~/.local/bin/agy", "agy"] },
+  "versionArgs": ["--version"],
+  "auth": { "type": "command", "args": ["models"], "expect": "gemini", "deep": true },
+  "usage": { "source": "none" },
+  "models": { "args": ["models"] },
+  "run": {
+    "read": "agy -p \"{prompt}\" --model {model} --print-timeout 10m",
+    "write": "agy -p \"{prompt}\" --model {model} --print-timeout 30m --add-dir \"{cwd}\""
+  },
+  "strengths": "Frontend/UI work, design checks, second-opinion review. Also reachable as the MCP tool ask_antigravity.",
+  "install": { "windows": "irm https://antigravity.google/cli/install.ps1 | iex", "unix": "curl -fsSL https://antigravity.google/cli/install.sh | bash" },
+  "docs": "https://antigravity.google",
+  "notes": "Model ids differ per account: run `agy models` and use an id from the first column. No usage numbers are exposed; agy waits or errors when quota is exhausted."
+}

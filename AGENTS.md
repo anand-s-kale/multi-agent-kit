@@ -1,6 +1,6 @@
 # multi-agent-kit — Agent Instructions
 
-This repo is the source of truth for the multi-agent setup on this machine. Read `README.md` for the layout and `docs/HANDOFF.md` for current state.
+This repo is the source of truth for the multi-agent setup. Start every session by reading `docs/HANDOFF.md` (current state, decisions, next steps), then `README.md` and `CONTRIBUTING.md` (adapter format).
 
 - Edit the files in this repo, never the installed copies in `~/.claude`, `~/.codex` or `~/.gemini`. Then run `pwsh -File .\install.ps1`.
 - `install.ps1` must stay idempotent: re-running it replaces its own output and never duplicates blocks.

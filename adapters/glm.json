@@ -1,0 +1,20 @@
+{
+  "id": "glm",
+  "name": "GLM Coding Plan (Z.ai) via Claude Code",
+  "vendor": "Z.ai",
+  "plans": "GLM Coding Plan Lite / Pro / Max",
+  "status": "untested",
+  "commands": { "win32": ["%APPDATA%\\npm\\claude.cmd", "claude"], "default": ["claude"] },
+  "versionArgs": ["--version"],
+  "auth": { "type": "env", "var": "ZAI_API_KEY" },
+  "usage": { "source": "none" },
+  "models": "GLM models served by Z.ai",
+  "run": {
+    "read": "ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic ANTHROPIC_AUTH_TOKEN=\"$ZAI_API_KEY\" claude -p \"{prompt}\" --permission-mode plan",
+    "write": "ANTHROPIC_BASE_URL=https://api.z.ai/api/anthropic ANTHROPIC_AUTH_TOKEN=\"$ZAI_API_KEY\" claude -p \"{prompt}\""
+  },
+  "strengths": "Cheap high-volume coding on a separate quota.",
+  "install": { "windows": "get a key at https://z.ai and set the ZAI_API_KEY user environment variable", "unix": "export ZAI_API_KEY=... (key from https://z.ai)" },
+  "docs": "https://docs.z.ai/devpack/overview",
+  "notes": "Untested by the maintainers. Runs the claude binary against Z.ai's Anthropic-compatible endpoint, so it spends the GLM quota, not Claude's. The key is read from the environment only; never put it in this repo. Use the /api/anthropic endpoint: the OpenAI-compatible one does not draw down the plan."
+}
