@@ -47,7 +47,7 @@ $ node ~/.multi-agent-kit/bin/mak.mjs status
 Needs Node 18+, PowerShell 7, and Claude Code. Sign in to whichever other CLIs you pay for first, following each one's own instructions (see the `install` field in its adapter).
 
 ```powershell
-git clone https://github.com/MrAk47Anand007/multi-agent-kit
+git clone https://github.com/anand-s-kale/multi-agent-kit
 cd multi-agent-kit
 pwsh -File .\install.ps1
 ```

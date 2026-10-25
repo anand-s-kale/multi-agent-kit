@@ -1,7 +1,7 @@
 # Session Handoff — multi-agent-kit
 
 **Last session:** 2026-10-24 → 2026-10-25. Started inside the QuickComm repo, moved here.
-**Owner:** Anand S Kale (GitHub `MrAk47Anand007`). Windows 11, PowerShell 7, Node 24.
+**Owner:** Anand S Kale (GitHub `anand-s-kale`, formerly `MrAk47Anand007`). Windows 11, PowerShell 7, Node 24.
 **Continue from:** this folder, in a new Claude Code session. Not from QuickComm.
 
 ## The idea (in Anand's words, summarised)
