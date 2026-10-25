@@ -4,20 +4,23 @@
 //   node mak.mjs status [--json] [--deep] [--refresh]
 //                                          which coding agents are installed, signed in, and how much quota is left
 //                                          (--refresh re-reads slow sources such as Antigravity instead of the 15-min cache)
+//   node mak.mjs log add --agent <id> --task "<text>" [--model <name>]
+//                                          record a delegation, with the agent's quota at dispatch time
+//   node mak.mjs log [--json] [--limit N]  show the delegation ledger (last 20 by default)
 //   node mak.mjs setup-statusline          point Claude Code's status line at statusline.mjs (only if none is set)
 //
 // The kit does not route work itself. The lead agent (Claude Code) reads this
 // report and decides. Zero dependencies; Node 18+.
 
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, writeFileSync, appendFileSync, mkdirSync, statSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const adaptersDir = resolve(here, '..', 'adapters');
-export const kitHome = join(homedir(), '.multi-agent-kit');
+export const kitHome = process.env.MAK_HOME ? resolve(process.env.MAK_HOME) : join(homedir(), '.multi-agent-kit');
 export const claudeUsageFile = join(kitHome, 'usage', 'claude.json');
 const isWin = process.platform === 'win32';
 
@@ -147,11 +150,12 @@ function codexUsage() {
 const agyUsageFile = join(kitHome, 'usage', 'antigravity.json');
 const AGY_CACHE_MS = 15 * 60 * 1000;
 
-async function agyUsage(agyPath, refresh) {
+async function agyUsage(agyPath, refresh, cacheOnly = false) {
   let cached = null;
   try { cached = JSON.parse(readFileSync(agyUsageFile, 'utf8')); } catch { /* none yet */ }
+  if (cacheOnly && !cached) return { source: 'agy-usage', windows: [], note: 'no cached reading' };
   const fresh = cached && Date.now() - Date.parse(cached.saved_at) < AGY_CACHE_MS;
-  if (!fresh || refresh) {
+  if (!cacheOnly && (!fresh || refresh)) {
     const { readAgyUsage } = await import('./agy-usage.mjs');
     const result = await readAgyUsage(agyPath);
     if (result.groups) {
@@ -237,10 +241,65 @@ function setupStatusline() {
   console.log(`Status line set in ${settingsPath}`);
 }
 
+const ledgerFile = join(kitHome, 'usage', 'ledger.jsonl');
+
+function readLedger() {
+  if (!existsSync(ledgerFile)) return [];
+  return readFileSync(ledgerFile, 'utf8').split(/\r?\n/).filter(Boolean).map((l) => JSON.parse(l));
+}
+
+function flag(args, name) {
+  const i = args.indexOf(name);
+  return i >= 0 && i + 1 < args.length ? args[i + 1] : undefined;
+}
+
+async function logAdd(args) {
+  const id = flag(args, '--agent'), task = flag(args, '--task'), model = flag(args, '--model');
+  if (!id || !task) {
+    console.error('Usage: mak log add --agent <id> --task "<text>" [--model <name>]');
+    process.exit(1);
+  }
+  const adapter = loadAdapters().find((a) => a.id === id);
+  if (!adapter) {
+    console.error(`unknown agent: ${id}`);
+    process.exit(1);
+  }
+  let quota = [];
+  try {
+    const u = adapter.usage?.source === 'agy-usage' ? await agyUsage(null, false, true) : await usageFor(adapter, null, false);
+    quota = u.windows.map(({ label, usedPercent, resetsAt, note }) => ({ label, usedPercent, resetsAt, ...(note ? { note } : {}) }));
+  } catch { /* quota is best effort */ }
+  const n = readLedger().length + 1;
+  const entry = { n, at: new Date().toISOString(), agent: id, model: model ?? null, task, quota };
+  mkdirSync(dirname(ledgerFile), { recursive: true });
+  appendFileSync(ledgerFile, JSON.stringify(entry) + '\n');
+  console.log(`logged #${n}: ${id} - ${task}`);
+}
+
+function logShow(args) {
+  const limit = Number(flag(args, '--limit') ?? 20);
+  const all = readLedger();
+  if (!all.length) { console.log('No delegations logged yet.'); return; }
+  const rows = limit > 0 ? all.slice(-limit) : all;
+  if (args.includes('--json')) { console.log(JSON.stringify(rows, null, 2)); return; }
+  const cut = (t) => (t.length > 60 ? `${t.slice(0, 59)}…` : t);
+  const table = [['#', 'time (UTC)', 'agent', 'model', 'quota at dispatch', 'task'], ...rows.map((e) => [
+    String(e.n),
+    e.at.slice(0, 16).replace('T', ' '),
+    e.agent,
+    e.model ?? '-',
+    e.quota?.length ? e.quota.map((w) => `${w.label} ${w.usedPercent}%`).join(' | ') : '-',
+    cut(e.task),
+  ])];
+  const widths = table[0].map((_, i) => Math.max(...table.map((r) => r[i].length)));
+  for (const r of table) console.log(r.map((c, i) => (i === r.length - 1 ? c : c.padEnd(widths[i]))).join('  '));
+}
+
 const [, , cmd, ...rest] = process.argv;
 if (cmd === 'status') await status({ json: rest.includes('--json'), deep: rest.includes('--deep'), refresh: rest.includes('--refresh') });
+else if (cmd === 'log') { if (rest[0] === 'add') await logAdd(rest.slice(1)); else logShow(rest); }
 else if (cmd === 'setup-statusline') setupStatusline();
 else {
-  console.log('Usage: mak status [--json] [--deep] [--refresh] | mak setup-statusline');
+  console.log('Usage: mak status [--json] [--deep] [--refresh] | mak log [add ...] | mak setup-statusline');
   process.exit(cmd ? 1 : 0);
 }
