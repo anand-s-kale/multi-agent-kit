@@ -2,9 +2,9 @@
 
 **Use every AI coding subscription you already pay for, not just one.**
 
-![One real run: Claude Code reads every agent's quota, then Claude Sonnet writes the code, Codex writes the tests and Gemini reviews, in parallel](docs/images/mak-demo.gif)
+![How it works: Claude Code reads every agent's quota, hands the code to Claude Sonnet, the tests to Codex and the review to Gemini, then merges and reviews. Codex and Gemini quota that would have expired did real work.](docs/images/mak-demo-animated.gif)
 
-*One real run, recorded on 2026-10-25. Claude Code built this repo's `mak log` command by splitting the work: Claude Sonnet wrote the code, Codex wrote 12 tests, and Gemini reviewed the design and drafted the docs. Codex then reviewed the result before merge. Every screen is a real capture or real command output.*
+*Animated from one real run on 2026-10-25, when Claude Code built this repo's `mak log` command this way. All numbers are from that run. [MP4 version](docs/images/mak-demo.mp4) · [real screen captures](#see-the-real-run).*
 
 Many developers pay for more than one plan: Claude Max, ChatGPT Plus/Pro (Codex), Google AI Pro (Antigravity), Kimi, Qwen, Cursor, Grok, GLM... Each has its own 5-hour and weekly limit, and the unused part simply expires. Most of us work in one tool all day, so the others' quota is wasted.
 
@@ -32,6 +32,12 @@ $ node ~/.multi-agent-kit/bin/mak.mjs status
 - kimi         not installed (adapter untested)
 + qwen         v0.26.1  | unknown | not exposed by this CLI
 ```
+
+## See the real run
+
+The same run as the animation above, as real screen captures of the Claude Code app plus real `mak status`, `npm test` and `mak log` output:
+
+![Real screen captures: mak status before, Claude dispatching to Sonnet, Codex and Gemini, tests passing, mak log, mak status after](docs/images/mak-demo.gif)
 
 ## Supported agents
 

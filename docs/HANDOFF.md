@@ -49,6 +49,8 @@ Plan: publish publicly, post the story on LinkedIn, and invite people with other
 - Found on the way: (1) Codex 0.164 on Windows: `-s workspace-write` denies access to the `-C` folder itself; used `-s danger-full-access` in a dedicated worktree (noted in `adapters/codex.json`). (2) `codex review --base X "prompt"` is rejected; adapter now has no prompt. (3) `node --test test/` fails on Node 24; script names the file. (4) Gemini's review inside `cross-model-reviewer` timed out at 5 min. (5) The Claude desktop app does not run the status line, so `usage/claude.json` goes stale there (last reading 16:55Z during this run); only the CLI updates it.
 - Deferred ideas from Gemini's design review: `n` can duplicate under concurrent `log add`; no outcome/status per entry; no `--agent` filter.
 
+- Animated explainer `docs/images/mak-demo-animated.gif` (README top) + `mak-demo.mp4` (for LinkedIn), rendered by `docs/demo/animate.py` (Pillow + ffmpeg) from the real run's numbers. The real-capture GIF moved to "See the real run".
+
 ## Not verified yet
 
 - The Qwen adapter: Qwen is installed, but its sign-in and `--approval-mode plan` are unchecked. Easiest next adapter to verify.
