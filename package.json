@@ -7,6 +7,7 @@
   "license": "MIT",
   "bin": { "mak": "bin/mak.mjs" },
   "engines": { "node": ">=18" },
+  "scripts": { "test": "node --test test/" },
   "dependencies": {
     "@lydell/node-pty": "1.2.0-beta.10"
   }
