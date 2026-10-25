@@ -60,6 +60,19 @@ Re-run `install.ps1` after pulling updates. It is idempotent.
 
 macOS/Linux: `bin/mak.mjs` and the adapters are cross-platform, but the installer is PowerShell only for now. An `install.sh` is a welcome contribution.
 
+## Delegation log
+
+Claude records each delegation, with the agent's quota at dispatch time, so you can see where the work went:
+
+```text
+$ mak log add --agent codex --task "write tests for mak log"
+$ mak log
+#  time (UTC)        agent  model  quota at dispatch  task
+1  2026-10-25 18:10  codex  -      5h 0% | 7d 0%      write tests for mak log
+```
+
+Pass `--json` for machine-readable output or `--limit N` to show more or fewer entries (default 20). The ledger lives in `~/.multi-agent-kit/usage/ledger.jsonl`.
+
 ## What gets installed
 
 | From | To |

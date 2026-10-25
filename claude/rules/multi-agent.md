@@ -43,6 +43,7 @@ For a cross-model review before merging, dispatch `subagent_type: "cross-model-r
 - Take the command from `run.read` / `run.write` / `run.review` in `status --json`, using the `path` it reports. On Windows the bare `codex` may be an old copy; `path` is the right one.
 - Fill `{prompt}`, `{cwd}`, `{model}`, `{base}`. Write the prompt as a complete brief: goal, files, constraints, expected output. The other agent has none of this conversation.
 - Runs take minutes: use `run_in_background` and read the result when notified.
+- Log every delegation, Claude subagents included, as you dispatch it: `node ~/.multi-agent-kit/bin/mak.mjs log add --agent <id> --task "<one line>" [--model <name>]`. `mak log` shows the history with each agent's quota at dispatch.
 - Adapters marked `untested` may need flag fixes. If one fails, read `<cli> --help`, fix the command, and tell the user so the adapter can be corrected.
 
 ## Rules

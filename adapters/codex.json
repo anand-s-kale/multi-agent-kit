@@ -18,5 +18,5 @@
   "strengths": "Well-specified fixes from a written plan, writing tests, adversarial review.",
   "install": { "windows": "npm install -g @openai/codex@latest; codex login", "unix": "npm install -g @openai/codex@latest && codex login" },
   "docs": "https://developers.openai.com/codex",
-  "notes": "Limits are read from the newest ~/.codex/sessions log, so they are as fresh as the last Codex run. 0.164+ has no mcp-server: call the CLI."
+  "notes": "Limits are read from the newest ~/.codex/sessions log, so they are as fresh as the last Codex run. 0.164+ has no mcp-server: call the CLI. Windows: in 0.164.0 the workspace-write sandbox denies access to the -C folder itself (Codex reports 'Access denied' and changes nothing). For write tasks on Windows, give Codex its own git worktree and replace `-s workspace-write` with `-s danger-full-access`."
 }
