@@ -2,6 +2,8 @@
 
 **Use every AI coding subscription you already pay for, not just one.**
 
+![mak status: Claude has used 64% of its weekly limit while Codex and Antigravity are near 0%](docs/images/mak-status.png)
+
 Many developers pay for more than one plan: Claude Max, ChatGPT Plus/Pro (Codex), Google AI Pro (Antigravity), Kimi, Qwen, Cursor, Grok, GLM... Each has its own 5-hour and weekly limit, and the unused part simply expires. Most of us work in one tool all day, so the others' quota is wasted.
 
 multi-agent-kit makes **Claude Code the lead**, and gives it what it needs to spend all of that capacity well:
