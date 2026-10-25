@@ -13,18 +13,18 @@ multi-agent-kit makes **Claude Code the lead**, and gives it what it needs to sp
 
 There is no routing engine. Claude already has the judgment; the kit gives it the facts.
 
-Example report (one real machine; the Claude numbers are illustrative):
+Real report from the maintainer's machine. Claude has used 64% of its week while Codex and Antigravity sit at almost 0%: that is the waste this kit exists to fix.
 
 ```text
 $ node ~/.multi-agent-kit/bin/mak.mjs status
-+ antigravity  v1.4.7   | signed in | not exposed by this CLI
-+ claude       v2.1.220 | signed in | 5h 23% used, resets 18:00Z | 7d 41% used, resets 2026-11-01 13:00Z
-+ codex        v0.164.0 | signed in | 5h 0% used, resets 18:02Z | 7d 0% used, resets 2026-11-01 13:02Z
++ antigravity  v1.4.7   | not checked (use --deep) | gemini 7d 0.1% used, resets 10-31 06:09Z | gemini 5h 0.2% used | claude+gpt 7d 0% used | claude+gpt 5h 0% used
++ claude       v2.1.310 | signed in | 5h 8% used, resets 19:00Z | 7d 64% used, resets 10-27 11:00Z
++ codex        v0.164.0 | signed in | 5h 0% used, resets 18:02Z | 7d 0% used, resets 11-01 13:02Z
 - cursor       not installed (adapter untested)
-+ glm          v2.1.220 | ZAI_API_KEY not set | not exposed by this CLI
++ glm          v2.1.310 | ZAI_API_KEY not set | not exposed by this CLI
 - grok         not installed (adapter untested)
 - kimi         not installed (adapter untested)
-+ qwen         v0.20.0  | unknown | not exposed by this CLI
++ qwen         v0.26.1  | unknown | not exposed by this CLI
 ```
 
 ## Supported agents
@@ -33,7 +33,7 @@ $ node ~/.multi-agent-kit/bin/mak.mjs status
 |---|---|---|---|
 | Claude Code | verified | ✅ 5h + 7d | the status line payload (`bin/statusline.mjs` saves it) |
 | OpenAI Codex CLI | verified | ✅ 5h + weekly | `~/.codex/sessions` logs |
-| Google Antigravity (`agy`) | verified | ❌ | also exposed to Claude as the MCP tool `ask_antigravity` |
+| Google Antigravity (`agy`) | verified | ✅ 5h + weekly, per model group | its interactive `/usage` screen, read through a pseudo-terminal (no model call, cached 15 min). Also exposed to Claude as the MCP tool `ask_antigravity` |
 | Kimi Code | untested | ❌ | `kimi -p` |
 | Qwen Code | untested | ❌ | `qwen -p` |
 | Cursor CLI | untested | ❌ | `agent -p --mode=ask` |

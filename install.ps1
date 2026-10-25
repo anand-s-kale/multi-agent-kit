@@ -37,7 +37,13 @@ foreach ($sub in 'bin', 'adapters') {
     New-Item -ItemType Directory -Force (Join-Path $makHome $sub) | Out-Null
     Copy-Item (Join-Path $Kit "$sub\*") (Join-Path $makHome $sub) -Recurse -Force
 }
-Write-Host "  copied bin\ and adapters\ to $makHome"
+Copy-Item (Join-Path $Kit 'package.json') $makHome -Force
+Write-Host "  copied bin\, adapters\ and package.json to $makHome"
+# node-pty lets mak read Antigravity's interactive /usage screen.
+Push-Location $makHome
+npm install --omit=dev --no-fund --no-audit --loglevel=error | Out-Null
+Pop-Location
+if ($LASTEXITCODE -eq 0) { Write-Host "  installed npm dependencies" } else { Write-Warning "npm install failed in $makHome; Antigravity usage will be unavailable" }
 node (Join-Path $makHome 'bin\mak.mjs') setup-statusline | ForEach-Object { "  $_" }
 
 Write-Host "Claude Code"

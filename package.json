@@ -1,0 +1,13 @@
+{
+  "name": "multi-agent-kit",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Use every AI coding subscription you pay for: Claude Code leads, reads each agent's quota and delegates so no quota expires unused.",
+  "type": "module",
+  "license": "MIT",
+  "bin": { "mak": "bin/mak.mjs" },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@lydell/node-pty": "1.2.0-beta.10"
+  }
+}

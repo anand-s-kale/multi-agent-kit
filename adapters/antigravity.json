@@ -7,7 +7,7 @@
   "commands": { "win32": ["%LOCALAPPDATA%\\agy\\bin\\agy.exe"], "default": ["~/.local/bin/agy", "agy"] },
   "versionArgs": ["--version"],
   "auth": { "type": "command", "args": ["models"], "expect": "gemini", "deep": true },
-  "usage": { "source": "none" },
+  "usage": { "source": "agy-usage" },
   "models": { "args": ["models"] },
   "run": {
     "read": "agy -p \"{prompt}\" --model {model} --print-timeout 10m",
@@ -16,5 +16,5 @@
   "strengths": "Frontend/UI work, design checks, second-opinion review. Also reachable as the MCP tool ask_antigravity.",
   "install": { "windows": "irm https://antigravity.google/cli/install.ps1 | iex", "unix": "curl -fsSL https://antigravity.google/cli/install.sh | bash" },
   "docs": "https://antigravity.google",
-  "notes": "Model ids differ per account: run `agy models` and use an id from the first column. No usage numbers are exposed; agy waits or errors when quota is exhausted."
+  "notes": "Model ids differ per account: run `agy models` and use an id from the first column. Usage is read from the interactive /usage screen through a pseudo-terminal (~10 s, no model call, cached 15 min); it reports weekly and 5-hour limits per model group, including Claude and GPT models served inside Antigravity, which have their own quota."
 }

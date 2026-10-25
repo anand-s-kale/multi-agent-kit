@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // mak — multi-agent-kit status and setup.
 //
-//   node mak.mjs status [--json] [--deep]   which coding agents are installed, signed in, and how much quota is left
+//   node mak.mjs status [--json] [--deep] [--refresh]
+//                                          which coding agents are installed, signed in, and how much quota is left
+//                                          (--refresh re-reads slow sources such as Antigravity instead of the 15-min cache)
 //   node mak.mjs setup-statusline          point Claude Code's status line at statusline.mjs (only if none is set)
 //
 // The kit does not route work itself. The lead agent (Claude Code) reads this
@@ -142,10 +144,35 @@ function codexUsage() {
   return { source: 'codex-sessions', windows: [], note: 'latest Codex session has no rate-limit data' };
 }
 
-function usageFor(adapter) {
+const agyUsageFile = join(kitHome, 'usage', 'antigravity.json');
+const AGY_CACHE_MS = 15 * 60 * 1000;
+
+async function agyUsage(agyPath, refresh) {
+  let cached = null;
+  try { cached = JSON.parse(readFileSync(agyUsageFile, 'utf8')); } catch { /* none yet */ }
+  const fresh = cached && Date.now() - Date.parse(cached.saved_at) < AGY_CACHE_MS;
+  if (!fresh || refresh) {
+    const { readAgyUsage } = await import('./agy-usage.mjs');
+    const result = await readAgyUsage(agyPath);
+    if (result.groups) {
+      cached = { saved_at: new Date().toISOString(), groups: result.groups };
+      mkdirSync(dirname(agyUsageFile), { recursive: true });
+      writeFileSync(agyUsageFile, JSON.stringify(cached, null, 2));
+    } else if (!cached) {
+      return { source: 'agy-usage', windows: [], note: `could not read /usage: ${result.error}` };
+    }
+  }
+  const windows = cached.groups
+    .flatMap((g) => g.windows)
+    .map((w) => (w.resetsAt && Date.parse(w.resetsAt) < Date.now() ? { ...w, usedPercent: 0, resetsAt: null, note: 'reset since last reading' } : w));
+  return { source: 'agy-usage', readAt: cached.saved_at, windows, groups: cached.groups };
+}
+
+async function usageFor(adapter, path, refresh) {
   switch (adapter.usage?.source) {
     case 'claude-statusline': return claudeUsage();
     case 'codex-sessions': return codexUsage();
+    case 'agy-usage': return agyUsage(path, refresh);
     default: return { source: 'none', windows: [], note: 'not exposed by this CLI' };
   }
 }
@@ -156,8 +183,8 @@ function loadAdapters() {
     .map((f) => JSON.parse(readFileSync(join(adaptersDir, f), 'utf8')));
 }
 
-function status({ json, deep }) {
-  const report = loadAdapters().map((a) => {
+async function status({ json, deep, refresh }) {
+  const report = await Promise.all(loadAdapters().map(async (a) => {
     const path = resolveCommand(a);
     if (!path) return { id: a.id, name: a.name, installed: false, adapterStatus: a.status, install: a.install };
     const version = versionOf(path, a);
@@ -171,13 +198,13 @@ function status({ json, deep }) {
       outdated,
       minVersion: a.minVersion,
       auth: checkAuth(path, a.auth, deep),
-      usage: usageFor(a),
+      usage: await usageFor(a, path, refresh),
       adapterStatus: a.status,
       run: a.run,
       strengths: a.strengths,
       notes: a.notes,
     };
-  });
+  }));
 
   if (json) {
     console.log(JSON.stringify({ generatedAt: new Date().toISOString(), agents: report }, null, 2));
@@ -211,9 +238,9 @@ function setupStatusline() {
 }
 
 const [, , cmd, ...rest] = process.argv;
-if (cmd === 'status') status({ json: rest.includes('--json'), deep: rest.includes('--deep') });
+if (cmd === 'status') await status({ json: rest.includes('--json'), deep: rest.includes('--deep'), refresh: rest.includes('--refresh') });
 else if (cmd === 'setup-statusline') setupStatusline();
 else {
-  console.log('Usage: mak status [--json] [--deep] | mak setup-statusline');
+  console.log('Usage: mak status [--json] [--deep] [--refresh] | mak setup-statusline');
   process.exit(cmd ? 1 : 0);
 }

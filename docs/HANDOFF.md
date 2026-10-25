@@ -34,9 +34,16 @@ Plan: publish publicly, post the story on LinkedIn, and invite people with other
 - Codex upgraded to 0.164.0 (npm). The old standalone 0.139 on PATH rejected all current models and its `codex update` failed.
 - Bugs found and fixed: the bridge's default model "Gemini 3.1 Pro (High)" doesn't exist on this account; PowerShell drops `--` so `claude mcp add -e … -- node` broke; the bridge's agy detection doesn't work on Windows.
 
+## Update — Antigravity quota (2026-10-25, later)
+
+- `agy` has no scriptable quota command. `agy -p "/usage"` sends it to the model; its local `GetUserStatus` server answers 401 without a token, which the CLI doesn't expose (works for the Antigravity IDE, which passes `--csrf_token`); no quota is cached on disk. The Python SDK (`google-antigravity`) uses API keys or Vertex and has no remaining-quota call.
+- **Working method:** `bin/agy-usage.mjs` runs `agy` in a pseudo-terminal (`@lydell/node-pty` 1.2.0-beta.10, installed into `~/.multi-agent-kit` by `install.ps1`), confirms trust for an empty `~/.multi-agent-kit/agy-probe` folder, types `/usage` and parses the screen. ~9 s, no model call, cached 15 min in `usage/antigravity.json`, `mak status --refresh` forces a re-read.
+- Gives weekly + 5h per group: `gemini` (Gemini Flash/Pro) and `claude+gpt` (Claude Opus/Sonnet, GPT-OSS). The latter is extra Claude capacity outside Claude Code's quota.
+- First full real report: Claude 7d **64%** used, Codex 0%, Antigravity ~0%. Claude limits now record via the status line (verified).
+- The parser depends on the `/usage` screen layout; a CLI update could break it. If it does, `mak status` keeps the last cached reading and says why.
+
 ## Not verified yet
 
-- Claude limits recorded from a real session: open a new session and check that `mak status` shows Claude 5h/7d.
 - `ask_antigravity` called from inside Claude (only `doctor` and direct `agy -p` were tested).
 - `cross-model-reviewer` on a real diff.
 - The Qwen adapter: Qwen is installed, but its sign-in and `--approval-mode plan` are unchecked. Easiest next adapter to verify.

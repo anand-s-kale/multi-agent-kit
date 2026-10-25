@@ -11,7 +11,9 @@ node ~/.multi-agent-kit/bin/mak.mjs status          # one line per agent
 node ~/.multi-agent-kit/bin/mak.mjs status --json   # full detail incl. run commands
 ```
 
-For each agent it shows: installed or not, version, sign-in, and usage windows (percent used + reset time) where the CLI exposes them. Claude and Codex report real numbers. Others show "not exposed": treat them as available until a run fails with a quota or rate-limit error, then avoid that agent until later.
+For each agent it shows: installed or not, version, sign-in, and usage windows (percent used + reset time) where the CLI exposes them. Claude, Codex and Antigravity report real numbers (Antigravity is cached for 15 minutes; add `--refresh` to re-read). Others show "not exposed": treat them as available until a run fails with a quota or rate-limit error, then avoid that agent until later.
+
+Antigravity has separate quota pools per model group. Its `claude+gpt` group serves Claude Opus/Sonnet with quota that is **not** Claude Code's: when Claude Code's own window is high, `agy -p --model <claude id from agy models>` gives more Claude capacity.
 
 ## Step 2: decide
 
