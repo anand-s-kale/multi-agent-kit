@@ -168,3 +168,22 @@ test('antigravity without a cache logs empty quota without probing', (t) => {
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.deepEqual(json()[0].quota, []);
 });
+
+test('--json on an empty ledger prints an empty array', (t) => {
+  const { json } = fixture(t);
+  assert.deepEqual(json(), []);
+});
+
+test('a corrupt ledger line is skipped, not fatal', (t) => {
+  const { write, add, json } = fixture(t);
+  write('ledger.jsonl', '{"n":1,"at":"2026-10-25T18:00:00.000Z","agent":"qwen","model":null,"task":"ok","quota":[]}\n{"n":2,"at":\n');
+  add('after corruption');
+  assert.deepEqual(json().map((e) => e.task), ['ok', 'after corruption']);
+});
+
+test('a flag is not taken as the value of the flag before it', (t) => {
+  const { run } = fixture(t);
+  const result = run('add', '--agent', 'qwen', '--task', '--model', 'x');
+  assert.equal(result.status, 1);
+  assert.equal(result.stderr.trim(), usage);
+});

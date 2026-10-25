@@ -13,7 +13,7 @@
   "run": {
     "read": "codex exec --skip-git-repo-check -s read-only -C \"{cwd}\" \"{prompt}\"",
     "write": "codex exec -s workspace-write -C \"{cwd}\" \"{prompt}\"",
-    "review": "codex review --base {base} \"{prompt}\""
+    "review": "codex review --base {base}"
   },
   "strengths": "Well-specified fixes from a written plan, writing tests, adversarial review.",
   "install": { "windows": "npm install -g @openai/codex@latest; codex login", "unix": "npm install -g @openai/codex@latest && codex login" },

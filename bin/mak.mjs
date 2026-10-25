@@ -245,12 +245,15 @@ const ledgerFile = join(kitHome, 'usage', 'ledger.jsonl');
 
 function readLedger() {
   if (!existsSync(ledgerFile)) return [];
-  return readFileSync(ledgerFile, 'utf8').split(/\r?\n/).filter(Boolean).map((l) => JSON.parse(l));
+  // Skip a corrupt or half-written line rather than losing the whole log.
+  return readFileSync(ledgerFile, 'utf8').split(/\r?\n/).filter(Boolean).flatMap((l) => {
+    try { return [JSON.parse(l)]; } catch { return []; }
+  });
 }
 
 function flag(args, name) {
   const i = args.indexOf(name);
-  return i >= 0 && i + 1 < args.length ? args[i + 1] : undefined;
+  return i >= 0 && i + 1 < args.length && !args[i + 1].startsWith('--') ? args[i + 1] : undefined;
 }
 
 async function logAdd(args) {
@@ -277,11 +280,11 @@ async function logAdd(args) {
 }
 
 function logShow(args) {
-  const limit = Number(flag(args, '--limit') ?? 20);
+  const limit = Number(flag(args, '--limit')) || 20;
   const all = readLedger();
-  if (!all.length) { console.log('No delegations logged yet.'); return; }
   const rows = limit > 0 ? all.slice(-limit) : all;
   if (args.includes('--json')) { console.log(JSON.stringify(rows, null, 2)); return; }
+  if (!all.length) { console.log('No delegations logged yet.'); return; }
   const cut = (t) => (t.length > 60 ? `${t.slice(0, 59)}…` : t);
   const table = [['#', 'time (UTC)', 'agent', 'model', 'quota at dispatch', 'task'], ...rows.map((e) => [
     String(e.n),
