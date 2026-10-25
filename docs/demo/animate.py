@@ -155,13 +155,18 @@ def s_merge(d, t):
 
 def s_log(d, t):
     caption(d, "Step 5 · Every hand-off is logged with the agent's quota at that moment", prog(t, 0, .6))
-    d.rounded_rectangle([90, 120, 1190, 470], 14, fill=PANEL)
-    d.text((120, 150), "$ mak log", font=MONOB, fill=OPUS)
+    d.rounded_rectangle([60, 120, W - 60, 470], 14, fill=PANEL)
+    d.text((90, 150), "$ mak log", font=MONOB, fill=OPUS)
     rows = [("#", "time (UTC)", "agent", "model", "quota at dispatch", "task"),
             ("1", "18:03", "claude", "sonnet", "5h 8% | 7d 64%", "cross-model review coordinator"),
             ("2", "18:03", "codex", "-", "5h 1% | 7d 1%", "independent review of the diff"),
             ("3", "18:03", "antigravity", "gemini-3.8-flash-high", "5h 0.2% | 7d 0.1%", "independent review of the diff")]
-    xs = [120, 160, 290, 430, 680, 890]
+    # Column x positions from measured text widths, centred in the panel, so nothing overflows.
+    widths = [max(MONOB.getlength(r[c]) for r in rows) for c in range(len(rows[0]))]
+    gap = 28
+    x = (W - (sum(widths) + gap * (len(widths) - 1))) // 2
+    xs = []
+    for w_ in widths: xs.append(x); x += w_ + gap
     for i, r in enumerate(rows):
         k = prog(t, .6 + i * .6, 1.0 + i * .6)
         for x, c in zip(xs, r): d.text((x, 210 + i * 50), c, font=MONOB if i == 0 else MONO, fill=mix(PANEL, DIM if i == 0 else FG, k))
