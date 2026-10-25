@@ -2,7 +2,9 @@
 
 **Use every AI coding subscription you already pay for, not just one.**
 
-![mak status: Claude has used 64% of its weekly limit while Codex and Antigravity are near 0%](docs/images/mak-status.png)
+![One real run: Claude Code reads every agent's quota, then Claude Sonnet writes the code, Codex writes the tests and Gemini reviews, in parallel](docs/images/mak-demo.gif)
+
+*One real run, recorded on 2026-10-25. Claude Code built this repo's `mak log` command by splitting the work: Claude Sonnet wrote the code, Codex wrote 12 tests, and Gemini reviewed the design and drafted the docs. Codex then reviewed the result before merge. Every screen is a real capture or real command output.*
 
 Many developers pay for more than one plan: Claude Max, ChatGPT Plus/Pro (Codex), Google AI Pro (Antigravity), Kimi, Qwen, Cursor, Grok, GLM... Each has its own 5-hour and weekly limit, and the unused part simply expires. Most of us work in one tool all day, so the others' quota is wasted.
 
@@ -16,6 +18,8 @@ multi-agent-kit makes **Claude Code the lead**, and gives it what it needs to sp
 There is no routing engine. Claude already has the judgment; the kit gives it the facts.
 
 Real report from the maintainer's machine. Claude has used 64% of its week while Codex and Antigravity sit at almost 0%: that is the waste this kit exists to fix.
+
+![mak status: Claude has used 64% of its weekly limit while Codex and Antigravity are near 0%](docs/images/mak-status.png)
 
 ```text
 $ node ~/.multi-agent-kit/bin/mak.mjs status
@@ -59,6 +63,19 @@ Then start a new Claude Code session. Ask it things like "check which agents hav
 Re-run `install.ps1` after pulling updates. It is idempotent.
 
 macOS/Linux: `bin/mak.mjs` and the adapters are cross-platform, but the installer is PowerShell only for now. An `install.sh` is a welcome contribution.
+
+## Delegation log
+
+Claude records each delegation, with the agent's quota at dispatch time, so you can see where the work went:
+
+```text
+$ mak log add --agent codex --task "write tests for mak log"
+$ mak log
+#  time (UTC)        agent  model  quota at dispatch  task
+1  2026-10-25 18:10  codex  -      5h 0% | 7d 0%      write tests for mak log
+```
+
+Pass `--json` for machine-readable output or `--limit N` to show more or fewer entries (default 20). The ledger lives in `~/.multi-agent-kit/usage/ledger.jsonl`.
 
 ## What gets installed
 

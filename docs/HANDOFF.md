@@ -42,10 +42,15 @@ Plan: publish publicly, post the story on LinkedIn, and invite people with other
 - First full real report: Claude 7d **64%** used, Codex 0%, Antigravity ~0%. Claude limits now record via the status line (verified).
 - The parser depends on the `/usage` screen layout; a CLI update could break it. If it does, `mak status` keeps the last cached reading and says why.
 
+## Update — first real delegation round + demo GIF (2026-10-25, evening)
+
+- Built `mak log` (delegation ledger, `~/.multi-agent-kit/usage/ledger.jsonl`, `MAK_HOME` override, cache-only Antigravity read) as a real multi-agent run: Sonnet subagent wrote the code, Codex wrote 12 tests in its own worktree, Gemini (`ask_antigravity`, **now verified from inside Claude**) reviewed the design and drafted the README section, `cross-model-reviewer` (**now verified on a real diff**) found 4 issues, all fixed. 15/15 tests pass (`npm test`). `install.ps1` re-run.
+- `docs/images/mak-demo.gif` is at the top of the README: real screen captures of the Claude app plus real `mak status` / `npm test` / `mak log` output, captioned. Built with a throwaway Pillow script (not in the repo).
+- Found on the way: (1) Codex 0.164 on Windows: `-s workspace-write` denies access to the `-C` folder itself; used `-s danger-full-access` in a dedicated worktree (noted in `adapters/codex.json`). (2) `codex review --base X "prompt"` is rejected; adapter now has no prompt. (3) `node --test test/` fails on Node 24; script names the file. (4) Gemini's review inside `cross-model-reviewer` timed out at 5 min. (5) The Claude desktop app does not run the status line, so `usage/claude.json` goes stale there (last reading 16:55Z during this run); only the CLI updates it.
+- Deferred ideas from Gemini's design review: `n` can duplicate under concurrent `log add`; no outcome/status per entry; no `--agent` filter.
+
 ## Not verified yet
 
-- `ask_antigravity` called from inside Claude (only `doctor` and direct `agy -p` were tested).
-- `cross-model-reviewer` on a real diff.
 - The Qwen adapter: Qwen is installed, but its sign-in and `--approval-mode plan` are unchecked. Easiest next adapter to verify.
 - Whether Antigravity reads `~/.gemini/GEMINI.md` as global rules.
 - Kimi, Cursor, Grok and GLM adapters: need people with those plans.
