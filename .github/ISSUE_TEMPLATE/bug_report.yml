@@ -1,0 +1,26 @@
+name: Bug report
+description: Something in mak, the installer, an adapter or the rules does not work
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Never paste API keys, tokens or account files. Redact paths you would rather not share.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you ran, what you expected, and what you got.
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: Output of `node ~/.multi-agent-kit/bin/mak.mjs status`
+      render: text
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Windows 11, PowerShell 7.5, Node 24.1
+    validations:
+      required: true

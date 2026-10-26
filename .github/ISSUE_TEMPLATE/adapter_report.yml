@@ -1,0 +1,37 @@
+name: Adapter test report
+description: You tried an adapter (Kimi, Qwen, Cursor, Grok, GLM or another) with a real plan
+title: "Adapter: <agent> "
+labels: [adapter]
+body:
+  - type: markdown
+    attributes:
+      value: Thank you! Testing adapters with real subscriptions is the most useful contribution. Never paste keys or tokens.
+  - type: input
+    id: agent
+    attributes:
+      label: Agent and CLI version
+      placeholder: qwen 0.26.1
+    validations:
+      required: true
+  - type: input
+    id: plan
+    attributes:
+      label: Plan or subscription
+      placeholder: Qwen Coder Plus
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: What worked
+      options:
+        - label: "`mak status` shows it installed, with the right version"
+        - label: Sign-in state is reported correctly
+        - label: "`run.read` works and does not edit files"
+        - label: "`run.write` works"
+        - label: Usage or limits are readable somewhere (say where below)
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Commands you ran, errors, flag changes needed, and where the CLI exposes quota (command, log file, API) if anywhere.
+    validations:
+      required: true
